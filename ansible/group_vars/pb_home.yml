@@ -1,0 +1,22 @@
+# Group variables for pb_home hosts
+app_name: rantoo
+app_user: rantoo
+app_group: rantoo
+app_directory: /opt/rantoo
+app_port: 33081
+
+# Python and Flask configuration
+python_version: "3.10"
+flask_env: "production"
+flask_debug: false
+
+# System configuration
+systemd_service_name: "rantoo"
+
+# Security settings
+app_user_shell: /bin/false
+app_user_home: /opt/rantoo
+
+# Logging
+log_directory: /var/log/rantoo
+log_level: INFO

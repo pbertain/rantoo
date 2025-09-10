@@ -1,0 +1,23 @@
+[Unit]
+Description=Rantoo Flask Application
+After=network.target
+
+[Service]
+Type=exec
+User={{ app_user }}
+Group={{ app_group }}
+WorkingDirectory={{ app_directory }}/app
+Environment=PATH={{ app_directory }}/venv/bin
+Environment=FLASK_APP=app.py
+Environment=FLASK_ENV={{ flask_env }}
+Environment=FLASK_DEBUG={{ flask_debug | lower }}
+ExecStart={{ app_directory }}/venv/bin/python {{ app_directory }}/app/app.py
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=rantoo
+
+[Install]
+WantedBy=multi-user.target
