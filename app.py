@@ -14,6 +14,11 @@ def human_to_epoch(human_str):
     dt = dt.replace(tzinfo=timezone.utc)
     return int(dt.timestamp())
 
+@app.route("/health")
+def health():
+    """Health check endpoint for load balancers and monitoring."""
+    return {"status": "healthy", "timestamp": datetime.now(timezone.utc).isoformat()}, 200
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     result = None
@@ -32,6 +37,9 @@ def index():
     return render_template("index.html", result=result, direction=direction, input_value=input_value)
 
 if __name__ == "__main__":
-    # Listen on TCP/33081, all interfaces
-    app.run(host="0.0.0.0", port=33081, debug=True)
+    import os
+    # Use environment variable for port, default to 33081 for production
+    port = int(os.environ.get('PORT', 33081))
+    debug = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
+    app.run(host="0.0.0.0", port=port, debug=debug)
 
