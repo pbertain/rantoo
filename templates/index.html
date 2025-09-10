@@ -8,34 +8,37 @@
 <body>
     <div class="container">
         <h1>Epoch Date 📅 & Time ⏳ Converter</h1>
-        <form method="post">
-            <div class="radio-group">
-                <label>
-                    <input type="radio" name="direction" value="epoch_to_human"
-                        {% if direction == "epoch_to_human" or not direction %}checked{% endif %}>
-                    Epoch → Date/Time
-                </label>
-                <label>
-                    <input type="radio" name="direction" value="human_to_epoch"
-                        {% if direction == "human_to_epoch" %}checked{% endif %}>
-                    Date/Time → Epoch
-                </label>
-            </div>
-            <input
-                class="space-input"
-                type="text"
-                name="input_value"
-                value="{{ input_value }}"
-                placeholder="Enter epoch or MM/DD/YYYY HH:MM"
-                required>
-            <button type="submit">Convert</button>
-        </form>
+        
+        <div class="data-entry-section">
+            <form method="post">
+                <div class="dropdown-container">
+                    <select name="direction" class="conversion-dropdown">
+                        <option value="epoch_to_human" {% if direction == "epoch_to_human" or not direction %}selected{% endif %}>Epoch → Date/Time</option>
+                        <option value="human_to_epoch" {% if direction == "human_to_epoch" %}selected{% endif %}>Date/Time → Epoch</option>
+                    </select>
+                </div>
+                <input
+                    class="space-input"
+                    type="text"
+                    name="input_value"
+                    value="{{ input_value }}"
+                    placeholder="Epoch or MM/DD/YYYY HH:MM"
+                    title="Enter epoch timestamp or date in MM/DD/YYYY HH:MM format"
+                    required>
+                <button type="submit">Convert</button>
+            </form>
+        </div>
         {% if result is not none %}
             <div class="result">
                 <h2>Result:</h2>
                 <div>{{ result }}</div>
             </div>
         {% endif %}
+        
+        <div class="api-link">
+            <a href="/api/docs/" target="_blank">📚 API Documentation</a>
+        </div>
+        
         <footer>
             <!--
             <small>Space Age Theme by Flask<br>Powered by Python 🐍 and <a href="https://elements.puhfph.cloud" target="_blank" style="text-decoration: none;"> <img src="https://elements.puhfph.cloud/static/img/powered-by-puhfph-cloud-logo.png" alt="Powered by PUHFPH Cloud" class="footer-logo"></small>

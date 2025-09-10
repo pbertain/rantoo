@@ -1,0 +1,114 @@
+---
+- name: Deploy Rantoo Flask Application
+  hosts: pb_home
+  become: yes
+
+  tasks:
+    - name: Update package cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install required system packages
+      apt:
+        name:
+          - python3
+          - python3-pip
+          - python3-venv
+          - git
+          - curl
+        state: present
+
+    - name: Create application group
+      group:
+        name: "{{ app_group }}"
+        state: present
+
+    - name: Create application user
+      user:
+        name: "{{ app_user }}"
+        group: "{{ app_group }}"
+        shell: "{{ app_user_shell }}"
+        home: "{{ app_user_home }}"
+        state: present
+        system: yes
+
+    - name: Create application directory
+      file:
+        path: "{{ app_directory }}/app"
+        state: directory
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: '0755'
+
+    - name: Create log directory
+      file:
+        path: "{{ log_directory }}"
+        state: directory
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: '0755'
+
+    - name: Copy application files
+      copy:
+        src: "{{ playbook_dir }}/../../app.py"
+        dest: "{{ app_directory }}/app/app.py"
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: '0644'
+
+    - name: Copy requirements file
+      copy:
+        src: "{{ playbook_dir }}/../../requirements.txt"
+        dest: "{{ app_directory }}/app/requirements.txt"
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: '0644'
+
+    - name: Copy static directory
+      copy:
+        src: "{{ playbook_dir }}/../../static/"
+        dest: "{{ app_directory }}/app/static/"
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: '0755'
+
+    - name: Copy templates directory
+      copy:
+        src: "{{ playbook_dir }}/../../templates/"
+        dest: "{{ app_directory }}/app/templates/"
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: '0755'
+
+    - name: Create virtual environment for application
+      command: python3 -m venv {{ app_directory }}/venv
+      args:
+        creates: "{{ app_directory }}/venv/bin/activate"
+
+    - name: Install Python dependencies
+      pip:
+        requirements: "{{ app_directory }}/app/requirements.txt"
+        virtualenv: "{{ app_directory }}/venv"
+        virtualenv_python: python3
+
+    - name: Create systemd service file
+      template:
+        src: ../templates/rantoo.service.j2
+        dest: /etc/systemd/system/{{ systemd_service_name }}.service
+        owner: root
+        group: root
+        mode: '0644'
+      notify: reload systemd
+
+    - name: Enable and start rantoo service
+      systemd:
+        name: "{{ systemd_service_name }}"
+        enabled: yes
+        state: started
+        daemon_reload: yes
+
+  handlers:
+    - name: reload systemd
+      systemd:
+        daemon_reload: yes
