@@ -32,6 +32,11 @@ def human_to_epoch(human_str):
     dt = dt.replace(tzinfo=timezone.utc)
     return int(dt.timestamp())
 
+@app.route("/health")
+def health():
+    """Health check endpoint for load balancers and monitoring."""
+    return {"status": "healthy", "timestamp": datetime.now(timezone.utc).isoformat()}, 200
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     result = None

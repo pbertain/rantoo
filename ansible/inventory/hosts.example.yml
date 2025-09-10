@@ -1,0 +1,37 @@
+# Example inventory file for Rantoo deployment
+# Copy this file to hosts.yml and configure with your actual host details
+
+all:
+  children:
+    pb_home:
+      hosts:
+        # NIRD cluster hosts
+        host74.nird.club:
+          ansible_user: your_username
+          ansible_ssh_private_key_file: ~/.ssh/id_rsa
+          ansible_python_interpreter: /usr/bin/python3
+        
+        host78.nird.club:
+          ansible_user: your_username
+          ansible_ssh_private_key_file: ~/.ssh/id_rsa
+          ansible_python_interpreter: /usr/bin/python3
+        
+        host79.nird.club:
+          ansible_user: your_username
+          ansible_ssh_private_key_file: ~/.ssh/id_rsa
+          ansible_python_interpreter: /usr/bin/python3
+        
+        # Example with password authentication (less secure)
+        # host74.nird.club:
+        #   ansible_user: your_username
+        #   ansible_ssh_pass: your_password
+        #   ansible_python_interpreter: /usr/bin/python3
+      
+      vars:
+        # Global variables for all hosts in pb_home group
+        ansible_python_interpreter: /usr/bin/python3
+        app_name: rantoo
+        app_user: rantoo
+        app_group: rantoo
+        app_directory: /opt/rantoo
+        app_port: 33081

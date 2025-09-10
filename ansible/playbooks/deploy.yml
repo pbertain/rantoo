@@ -2,6 +2,7 @@
 - name: Deploy Rantoo Flask Application
   hosts: pb_home
   become: yes
+  gather_facts: yes
 
   tasks:
     - name: Update package cache
@@ -112,3 +113,8 @@
     - name: reload systemd
       systemd:
         daemon_reload: yes
+
+    - name: restart rantoo
+      systemd:
+        name: "{{ systemd_service_name }}"
+        state: restarted
