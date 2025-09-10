@@ -1,0 +1,17 @@
+# Global code owners
+* @pbertain @paulb
+
+# API and core functionality
+app.py @paulb @pbertain
+test_api.py @paulb @pbertain
+
+# Configuration files
+requirements.txt @paulb @pbertain
+pytest.ini @paulb @pbertain
+Makefile @paulb @pbertain
+
+# GitHub Actions
+.github/ @paulb @pbertain
+
+# Documentation
+README.md @paulb @pbertain
