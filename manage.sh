@@ -1,9 +1,15 @@
 #!/bin/bash
 
 # Rantoo Management Script
-# This script provides common management operations for the deployed application
+# This script provides management functions for the deployed Rantoo application
 
 set -e
+
+# Configuration
+ANSIBLE_DIR="ansible"
+INVENTORY="hosts"
+ANSIBLE_USER="ansible"
+PRIVATE_KEY="~/.ssh/keys/nirdclub__id_ed25519"
 
 # Colors for output
 RED='\033[0;31m'
@@ -12,15 +18,17 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# Configuration
-ANSIBLE_DIR="ansible"
-INVENTORY="hosts"
-ANSIBLE_USER="ansible"
-PRIVATE_KEY="~/.ssh/keys/nirdclub__id_ed25519"
+# Print functions
+print_header() {
+    echo -e "${BLUE}[HEADER]${NC} $1"
+}
 
-# Function to print colored output
 print_status() {
-    echo -e "${GREEN}[INFO]${NC} $1"
+    echo -e "${BLUE}[INFO]${NC} $1"
+}
+
+print_success() {
+    echo -e "${GREEN}[SUCCESS]${NC} $1"
 }
 
 print_warning() {
@@ -31,116 +39,68 @@ print_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
-print_header() {
-    echo -e "${BLUE}[HEADER]${NC} $1"
+# Check if inventory file exists
+check_inventory() {
+    if [ ! -f "$INVENTORY" ]; then
+        print_error "Inventory file '$INVENTORY' not found!"
+        exit 1
+    fi
 }
 
-# Show usage information
-show_usage() {
-    echo "Rantoo Management Script"
-    echo "========================"
-    echo ""
-    echo "Usage: $0 <command>"
-    echo ""
-    echo "Commands:"
-    echo "  status     - Show application status"
-    echo "  logs       - Show application logs"
-    echo "  restart    - Restart the application"
-    echo "  stop       - Stop the application"
-    echo "  start      - Start the application"
-    echo "  update     - Update application code"
-    echo "  health     - Check application health"
-    echo "  help       - Show this help message"
-    echo ""
-}
-
-# Check application status
-check_status() {
+# Status function
+status() {
     print_header "Application Status"
     cd "$ANSIBLE_DIR"
-    ansible  --ask-vault-pass -i "../$INVENTORY" -u "$ANSIBLE_USER" --private-key "$PRIVATE_KEY" pb_home -m systemd -a "name=rantoo state=started"
+    ansible -i "../$INVENTORY" -u "$ANSIBLE_USER" --private-key "$PRIVATE_KEY" pb_home -m systemd -a "name=rantoo"
 }
 
-# Show application logs
-show_logs() {
+# Logs function
+logs() {
     print_header "Application Logs (last 50 lines)"
     cd "$ANSIBLE_DIR"
-    ansible  --ask-vault-pass -i "../$INVENTORY" -u "$ANSIBLE_USER" --private-key "$PRIVATE_KEY" pb_home -m shell -a "journalctl -u rantoo -n 50 --no-pager"
+    ansible -i "../$INVENTORY" -u "$ANSIBLE_USER" --private-key "$PRIVATE_KEY" pb_home -m shell -a "journalctl -u rantoo -n 50 --no-pager"
 }
 
-# Restart application
-restart_app() {
+# Restart function
+restart() {
     print_header "Restarting Application"
     cd "$ANSIBLE_DIR"
-    ansible  --ask-vault-pass -i "../$INVENTORY" -u "$ANSIBLE_USER" --private-key "$PRIVATE_KEY" pb_home -m systemd -a "name=rantoo state=restarted" --become
+    ansible -i "../$INVENTORY" -u "$ANSIBLE_USER" --private-key "$PRIVATE_KEY" pb_home -m systemd -a "name=rantoo state=restarted"
     print_status "Application restarted"
 }
 
-# Stop application
-stop_app() {
-    print_header "Stopping Application"
-    cd "$ANSIBLE_DIR"
-    ansible  --ask-vault-pass -i "../$INVENTORY" -u "$ANSIBLE_USER" --private-key "$PRIVATE_KEY" pb_home -m systemd -a "name=rantoo state=stopped" --become
-    print_status "Application stopped"
-}
-
-# Start application
-start_app() {
-    print_header "Starting Application"
-    cd "$ANSIBLE_DIR"
-    ansible  --ask-vault-pass -i "../$INVENTORY" -u "$ANSIBLE_USER" --private-key "$PRIVATE_KEY" pb_home -m systemd -a "name=rantoo state=started" --become
-    print_status "Application started"
-}
-
-# Update application
-update_app() {
-    print_header "Updating Application"
-    cd "$ANSIBLE_DIR"
-    ansible  --ask-vault-pass -i "../$INVENTORY" -u "$ANSIBLE_USER" --private-key "$PRIVATE_KEY" pb_home -m git -a "repo={{ ansible_play_dir }}/.. dest=/opt/rantoo/app version=main force=yes" --become
-    ansible  --ask-vault-pass -i "../$INVENTORY" -u "$ANSIBLE_USER" --private-key "$PRIVATE_KEY" pb_home -m pip -a "requirements=/opt/rantoo/app/requirements.txt virtualenv=/opt/rantoo/venv" --become
-    ansible  --ask-vault-pass -i "../$INVENTORY" -u "$ANSIBLE_USER" --private-key "$PRIVATE_KEY" pb_home -m systemd -a "name=rantoo state=restarted" --become
-    print_status "Application updated and restarted"
-}
-
-
-# Check application health
-check_health() {
+# Health check function
+health() {
     print_header "Application Health Check"
     cd "$ANSIBLE_DIR"
-    ansible  --ask-vault-pass -i "../$INVENTORY" -u "$ANSIBLE_USER" --private-key "$PRIVATE_KEY" pb_home -m uri -a "url=http://localhost:33081/health return_content=yes"
+    ansible -i "../$INVENTORY" -u "$ANSIBLE_USER" --private-key "$PRIVATE_KEY" pb_home -m uri -a "url=http://localhost:33081/health return_content=yes"
 }
 
 # Main execution
 main() {
-    case "${1:-help}" in
+    check_inventory
+    
+    case "${1:-status}" in
         status)
-            check_status
+            status
             ;;
         logs)
-            show_logs
+            logs
             ;;
         restart)
-            restart_app
-            ;;
-        stop)
-            stop_app
-            ;;
-        start)
-            start_app
-            ;;
-        update)
-            update_app
+            restart
             ;;
         health)
-            check_health
-            ;;
-        help|--help|-h)
-            show_usage
+            health
             ;;
         *)
-            print_error "Unknown command: $1"
+            echo "Usage: $0 {status|logs|restart|health}"
             echo ""
-            show_usage
+            echo "Commands:"
+            echo "  status  - Show application status"
+            echo "  logs    - Show application logs"
+            echo "  restart - Restart the application"
+            echo "  health  - Check application health"
             exit 1
             ;;
     esac

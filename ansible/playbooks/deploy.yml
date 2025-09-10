@@ -31,12 +31,12 @@
         group: "{{ app_group }}"
         shell: "{{ app_user_shell }}"
         home: "{{ app_user_home }}"
+        state: present
         system: yes
-        create_home: no
 
     - name: Create application directory
       file:
-        path: "{{ app_directory }}"
+        path: "{{ app_directory }}/app"
         state: directory
         owner: "{{ app_user }}"
         group: "{{ app_group }}"
@@ -68,8 +68,8 @@
 
     - name: Copy static directory
       copy:
-        src: "{{ playbook_dir }}/../../static"
-        dest: "{{ app_directory }}/app/static"
+        src: "{{ playbook_dir }}/../../static/"
+        dest: "{{ app_directory }}/app/static/"
         owner: "{{ app_user }}"
         group: "{{ app_group }}"
         mode: '0755'
