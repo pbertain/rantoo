@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Epoch Date 📅 & Time ⏳ Converter</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Epoch Date 📅 & Time ⏳ Converter</h1>
+        <form method="post">
+            <div class="radio-group">
+                <label>
+                    <input type="radio" name="direction" value="epoch_to_human"
+                        {% if direction == "epoch_to_human" or not direction %}checked{% endif %}>
+                    Epoch → Date/Time
+                </label>
+                <label>
+                    <input type="radio" name="direction" value="human_to_epoch"
+                        {% if direction == "human_to_epoch" %}checked{% endif %}>
+                    Date/Time → Epoch
+                </label>
+            </div>
+            <input
+                class="space-input"
+                type="text"
+                name="input_value"
+                value="{{ input_value }}"
+                placeholder="Enter epoch or MM/DD/YYYY HH:MM"
+                required>
+            <button type="submit">Convert</button>
+        </form>
+        {% if result is not none %}
+            <div class="result">
+                <h2>Result:</h2>
+                <div>{{ result }}</div>
+            </div>
+        {% endif %}
+        <footer>
+            <!--
+            <small>Space Age Theme by Flask<br>Powered by Python 🐍 and <a href="https://elements.puhfph.cloud" target="_blank" style="text-decoration: none;"> <img src="https://elements.puhfph.cloud/static/img/powered-by-puhfph-cloud-logo.png" alt="Powered by PUHFPH Cloud" class="footer-logo"></small>
+	    -->
+            <small>Space Age Theme by Flask<br><a href="https://elements.puhfph.cloud" target="_blank" style="text-decoration: none;"> <img src="https://elements.puhfph.cloud/static/img/powered-by-puhfph-cloud-logo.png" alt="Powered by PUHFPH Cloud" class="footer-logo"></small>
+        </footer>
+    </div>
+</body>
+</html>
+
