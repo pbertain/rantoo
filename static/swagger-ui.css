@@ -1,0 +1,244 @@
+/* Custom Swagger UI Styling */
+.swagger-ui {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Header styling */
+.swagger-ui .topbar {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-bottom: 3px solid #4a5568;
+}
+
+.swagger-ui .topbar .download-url-wrapper {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    padding: 8px 12px;
+}
+
+.swagger-ui .topbar .download-url-wrapper input[type=text] {
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 4px;
+    color: #2d3748;
+    font-weight: 500;
+}
+
+/* Main content area */
+.swagger-ui .wrapper {
+    background: #f7fafc;
+}
+
+/* Info section */
+.swagger-ui .info {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 20px 0;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    color: white;
+}
+
+.swagger-ui .info .title {
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    margin-bottom: 8px;
+}
+
+.swagger-ui .info .description {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+/* Operations */
+.swagger-ui .opblock {
+    border-radius: 12px;
+    margin: 16px 0;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    border: none;
+    overflow: hidden;
+}
+
+.swagger-ui .opblock.opblock-get {
+    border-left: 6px solid #48bb78;
+    background: linear-gradient(135deg, #e6fffa 0%, #f0fff4 100%);
+}
+
+.swagger-ui .opblock.opblock-post {
+    border-left: 6px solid #4299e1;
+    background: linear-gradient(135deg, #ebf8ff 0%, #f7fafc 100%);
+}
+
+.swagger-ui .opblock.opblock-put {
+    border-left: 6px solid #ed8936;
+    background: linear-gradient(135deg, #fffaf0 0%, #fef5e7 100%);
+}
+
+.swagger-ui .opblock.opblock-delete {
+    border-left: 6px solid #f56565;
+    background: linear-gradient(135deg, #fed7d7 0%, #fef5f5 100%);
+}
+
+/* Operation headers */
+.swagger-ui .opblock .opblock-summary {
+    padding: 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.swagger-ui .opblock .opblock-summary-description {
+    color: #4a5568;
+    font-weight: 500;
+    margin-top: 8px;
+}
+
+/* Method badges */
+.swagger-ui .opblock .opblock-summary-method {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Path styling */
+.swagger-ui .opblock .opblock-summary-path {
+    color: #2d3748;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+/* Expandable sections */
+.swagger-ui .opblock .opblock-section-header {
+    background: rgba(255, 255, 255, 0.8);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 16px 20px;
+}
+
+.swagger-ui .opblock .opblock-section-header h4 {
+    color: #2d3748;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Parameters and responses */
+.swagger-ui .opblock .opblock-body {
+    background: white;
+    padding: 20px;
+}
+
+.swagger-ui .parameter__name {
+    color: #2d3748;
+    font-weight: 600;
+}
+
+.swagger-ui .parameter__type {
+    color: #667eea;
+    font-weight: 500;
+}
+
+/* Response codes */
+.swagger-ui .responses-inner h4 {
+    color: #2d3748;
+    font-weight: 600;
+}
+
+.swagger-ui .responses-inner .response-col_status {
+    font-weight: 700;
+}
+
+/* Buttons */
+.swagger-ui .btn {
+    border-radius: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
+}
+
+.swagger-ui .btn.execute {
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+    border: none;
+    box-shadow: 0 4px 12px rgba(72, 187, 120, 0.3);
+}
+
+.swagger-ui .btn.execute:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(72, 187, 120, 0.4);
+}
+
+/* Code blocks */
+.swagger-ui .highlight-code {
+    background: #2d3748;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 12px 0;
+}
+
+.swagger-ui .highlight-code pre {
+    color: #e2e8f0;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Schema styling */
+.swagger-ui .model-container {
+    background: #f7fafc;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 12px 0;
+    border: 1px solid #e2e8f0;
+}
+
+.swagger-ui .model-title {
+    color: #2d3748;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+/* Scrollbar styling */
+.swagger-ui ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.swagger-ui ::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+.swagger-ui ::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 4px;
+}
+
+.swagger-ui ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+}
+
+/* Loading animation */
+.swagger-ui .loading-container {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    color: white;
+}
+
+/* Error styling */
+.swagger-ui .errors-wrapper {
+    background: #fed7d7;
+    border: 1px solid #f56565;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0;
+}
+
+.swagger-ui .errors-wrapper .error-wrapper {
+    color: #c53030;
+    font-weight: 500;
+}
