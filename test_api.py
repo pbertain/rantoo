@@ -43,7 +43,7 @@ class TestDateTimeFunctions:
         
         # Test YYYYMMDDHHMM format (no seconds)
         result = human_to_epoch('202509101311')
-        assert result == 1757509261  # Should default seconds to 00
+        assert result == 1757509860  # Should default seconds to 00
         
         # Test legacy MM/DD/YYYY HH:MM format
         result = human_to_epoch('12/25/2023 16:10')
@@ -100,7 +100,7 @@ class TestAPIEndpoints:
         response = client.get('/api/v1/datetime/202509101311')
         assert response.status_code == 200
         data = json.loads(response.data)
-        assert data['epoch'] == 1757509261
+        assert data['epoch'] == 1757509860
     
     def test_api_v1_invalid_datetime(self, client):
         """Test /api/v1/datetime/{datetime_str} endpoint with invalid input"""
@@ -117,9 +117,9 @@ class TestAPIEndpoints:
         assert response.status_code == 200
         
         text = response.data.decode('utf-8')
-        assert 'Epoch: 1757509860' in text
-        assert 'Datetime: Wed 2025-09-10 13:11:00' in text
-        assert 'Input: 1757509860' in text
+        assert 'Epoch:     1757509860' in text
+        assert 'Datetime:  Wed 2025-09-10 13:11:00' in text
+        assert 'Input:     1757509860' in text
     
     def test_curl_v1_datetime_to_epoch_formats(self, client):
         """Test /curl/v1/datetime/{datetime_str} endpoint with various formats"""
@@ -128,15 +128,15 @@ class TestAPIEndpoints:
         assert response.status_code == 200
         
         text = response.data.decode('utf-8')
-        assert 'Epoch: 1757509860' in text
-        assert 'Datetime: 2025-09-10-131100' in text
+        assert 'Epoch:     1757509860' in text
+        assert 'Datetime:  2025-09-10-131100' in text
         
         # Test YYYYMMDDHHMMSS format
         response = client.get('/curl/v1/datetime/20250910131100')
         assert response.status_code == 200
         
         text = response.data.decode('utf-8')
-        assert 'Epoch: 1757509860' in text
+        assert 'Epoch:     1757509860' in text
     
     def test_curl_v1_invalid_datetime(self, client):
         """Test /curl/v1/datetime/{datetime_str} endpoint with invalid input"""
