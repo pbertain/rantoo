@@ -165,13 +165,13 @@ def swagger_ui():
                     }},
                     "basePath": "/",
                     "tags": [
-                        {{"name": "v1", "description": "JSON API endpoints (v1)"}},
-                        {{"name": "curl/v1", "description": "CURL endpoints (v1)"}}
+                        {{"name": "JSON API endpoints (v1)", "description": "JSON API endpoints (v1)"}},
+                        {{"name": "CURL endpoints (v1)", "description": "CURL endpoints (v1)"}}
                     ],
                     "paths": {{
-                        "/v1/epoch/{{epoch_time}}": {{
+                        "/api/v1/epoch/{{epoch_time}}": {{
                             "get": {{
-                                "tags": ["v1"],
+                                "tags": ["JSON API endpoints (v1)"],
                                 "summary": "Convert epoch time to human readable datetime",
                                 "description": "Convert epoch time to human readable datetime",
                                 "parameters": [
@@ -198,9 +198,9 @@ def swagger_ui():
                                 }}
                             }}
                         }},
-                        "/v1/datetime/{{datetime_str}}": {{
+                        "/api/v1/datetime/{{datetime_str}}": {{
                             "get": {{
-                                "tags": ["v1"],
+                                "tags": ["JSON API endpoints (v1)"],
                                 "summary": "Convert human readable datetime to epoch time",
                                 "description": "Convert human readable datetime to epoch time",
                                 "parameters": [

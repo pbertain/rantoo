@@ -31,6 +31,60 @@
     color: #ffffff;
 }
 
+/* Make all text much brighter and more readable */
+.swagger-ui {
+    color: #ffffff !important;
+}
+
+/* Brighten all gray text - much lighter for human eyes! */
+.swagger-ui .info .description,
+.swagger-ui .opblock .opblock-summary-description,
+.swagger-ui .opblock .opblock-section-header h4,
+.swagger-ui .parameter__name,
+.swagger-ui .responses-inner h4,
+.swagger-ui .opblock .opblock-body,
+.swagger-ui .opblock .opblock-summary-path,
+.swagger-ui .opblock .opblock-summary-description,
+.swagger-ui .opblock .opblock-section-header h4,
+.swagger-ui .parameter__type,
+.swagger-ui .responses-inner .response-col_status,
+.swagger-ui .opblock .opblock-body p,
+.swagger-ui .opblock .opblock-body div,
+.swagger-ui .opblock .opblock-body span {
+    color: #ffffff !important;
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+    font-weight: 500 !important;
+}
+
+/* Make section headers extra bright */
+.swagger-ui .opblock .opblock-section-header h4 {
+    color: #ffffff !important;
+    font-weight: bold !important;
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+}
+
+/* Make ALL text super readable - nuclear option for human eyes! */
+.swagger-ui * {
+    color: #ffffff !important;
+}
+
+/* Override specific elements that need different colors */
+.swagger-ui .opblock .opblock-summary-path {
+    color: #87ceeb !important; /* Light blue for paths */
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
+}
+
+.swagger-ui .parameter__type {
+    color: #87ceeb !important; /* Light blue for types */
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
+}
+
+/* Make sure buttons and interactive elements are visible */
+.swagger-ui .btn {
+    color: #000000 !important;
+    text-shadow: none !important;
+}
+
 /* Info section */
 .swagger-ui .info {
     background: rgba(255, 255, 255, 0.05);
