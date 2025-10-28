@@ -16,12 +16,12 @@ class TestDateTimeFunctions:
         # Test known epoch timestamp
         epoch = 1757509860
         result = epoch_to_human(epoch)
-        assert result == "Wed 2025-09-10 13:11:00"
+        assert result == "Wed 2025-09-10 13:11:00 UTC"
         
         # Test Christmas 2023
         epoch = 1703520600
         result = epoch_to_human(epoch)
-        assert result == "Mon 2023-12-25 16:10:00"
+        assert result == "Mon 2023-12-25 16:10:00 UTC"
         
         # Test current time format
         current_epoch = int(datetime.now(timezone.utc).timestamp())
@@ -59,6 +59,23 @@ class TestDateTimeFunctions:
         
         with pytest.raises(ValueError):
             human_to_epoch('not-a-date-at-all')
+    
+    def test_epoch_to_human_with_timezone(self):
+        """Test epoch to human conversion with timezone"""
+        # Test known epoch timestamp
+        epoch = 1757509860
+        
+        # Test with Los Angeles timezone
+        result = epoch_to_human(epoch, 'America/Los_Angeles')
+        assert result.endswith('PST') or result.endswith('PDT')
+        
+        # Test with New York timezone
+        result = epoch_to_human(epoch, 'America/New_York')
+        assert result.endswith('EST') or result.endswith('EDT')
+        
+        # Test with Tokyo timezone
+        result = epoch_to_human(epoch, 'Asia/Tokyo')
+        assert result.endswith('JST') or 'GMT+9' in result
 
 
 class TestAPIEndpoints:
@@ -78,7 +95,7 @@ class TestAPIEndpoints:
         
         data = json.loads(response.data)
         assert data['epoch'] == 1757509860
-        assert data['datetime'] == "Wed 2025-09-10 13:11:00"
+        assert data['datetime'] == "Wed 2025-09-10 13:11:00 UTC"
         assert data['input'] == "1757509860"
     
     def test_api_v1_datetime_to_epoch_formats(self, client):
@@ -118,7 +135,7 @@ class TestAPIEndpoints:
         
         text = response.data.decode('utf-8')
         assert 'Epoch:     1757509860' in text
-        assert 'Datetime:  Wed 2025-09-10 13:11:00' in text
+        assert 'Datetime:  Wed 2025-09-10 13:11:00 UTC' in text
         assert 'Input:     1757509860' in text
     
     def test_curl_v1_datetime_to_epoch_formats(self, client):
