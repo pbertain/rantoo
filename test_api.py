@@ -76,6 +76,28 @@ class TestDateTimeFunctions:
         # Test with Tokyo timezone
         result = epoch_to_human(epoch, 'Asia/Tokyo')
         assert result.endswith('JST') or 'GMT+9' in result
+    
+    def test_human_to_epoch_with_timezone(self):
+        """Test human to epoch conversion with timezone"""
+        # The same datetime in different timezones should produce different epoch values
+        # 2025-09-10 13:11:00 in Los Angeles should be different from UTC
+        
+        # Convert same time in different timezones to verify they produce different epochs
+        dt_str = '2025-09-10-131100'
+        
+        # Convert as UTC (default behavior)
+        epoch_utc = human_to_epoch(dt_str)
+        
+        # Convert as Pacific Time
+        epoch_pst = human_to_epoch(dt_str, 'America/Los_Angeles')
+        
+        # These should be different (LA is behind UTC)
+        assert epoch_pst != epoch_utc
+        
+        # The epoch values should be approximately 8 hours apart (or 7 if DST)
+        # PST is UTC-8, PDT is UTC-7
+        time_diff = abs(epoch_utc - epoch_pst)
+        assert 7 * 3600 <= time_diff <= 8 * 3600  # 7-8 hours in seconds
 
 
 class TestAPIEndpoints:

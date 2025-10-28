@@ -71,20 +71,23 @@
         document.addEventListener('DOMContentLoaded', function() {
             const directionSelect = document.getElementById('direction');
             const timezoneContainer = document.getElementById('timezone-container');
+            const timezoneSelect = timezoneContainer.querySelector('select');
             
-            function updateTimezoneVisibility() {
+            // Update label/description based on direction
+            function updateTimezoneLabel() {
                 if (directionSelect.value === 'epoch_to_human') {
-                    timezoneContainer.style.display = 'block';
+                    timezoneSelect.setAttribute('title', 'Select the timezone to convert the epoch time to');
                 } else {
-                    timezoneContainer.style.display = 'none';
+                    timezoneSelect.setAttribute('title', 'Select the timezone of your input datetime');
                 }
             }
             
             // Set initial state
-            updateTimezoneVisibility();
+            timezoneContainer.style.display = 'block'; // Always show timezone dropdown
+            updateTimezoneLabel();
             
             // Listen for changes
-            directionSelect.addEventListener('change', updateTimezoneVisibility);
+            directionSelect.addEventListener('change', updateTimezoneLabel);
         });
     </script>
 </body>

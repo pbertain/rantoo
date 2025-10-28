@@ -32,32 +32,44 @@ def epoch_to_human(epoch, target_tz=None):
             pass  # Fall back to UTC if timezone is invalid
     return dt.strftime('%a %Y-%m-%d %H:%M:%S UTC')
 
-def human_to_epoch(human_str):
+def human_to_epoch(human_str, input_tz=None):
     """Converts various datetime formats to epoch seconds."""
+    # Helper to localize datetime to timezone then convert to UTC
+    def localize_and_convert_to_utc(dt, tz_name):
+        if tz_name:
+            try:
+                tz = pytz.timezone(tz_name)
+                localized_dt = tz.localize(dt, is_dst=None)
+                return int(localized_dt.astimezone(timezone.utc).timestamp())
+            except Exception:
+                # Fall back to UTC if timezone is invalid
+                dt = dt.replace(tzinfo=timezone.utc)
+                return int(dt.timestamp())
+        else:
+            dt = dt.replace(tzinfo=timezone.utc)
+            return int(dt.timestamp())
+    
     # Handle YYYY-MM-DD-HHMMSS format
     if re.match(r'^\d{4}-\d{2}-\d{2}-\d{6}$', human_str):
         dt = datetime.strptime(human_str, '%Y-%m-%d-%H%M%S')
-        dt = dt.replace(tzinfo=timezone.utc)
-        return int(dt.timestamp())
+        return localize_and_convert_to_utc(dt, input_tz)
     
     # Handle YYYYMMDDHHMMSS format
     elif re.match(r'^\d{14}$', human_str):
         dt = datetime.strptime(human_str, '%Y%m%d%H%M%S')
-        dt = dt.replace(tzinfo=timezone.utc)
-        return int(dt.timestamp())
+        return localize_and_convert_to_utc(dt, input_tz)
     
     # Handle YYYYMMDDHHMM format (no seconds) - default to 00 seconds
     elif re.match(r'^\d{12}$', human_str):
         # Parse as YYYYMMDDHHMM and set seconds to 00
         dt = datetime.strptime(human_str, '%Y%m%d%H%M')
-        dt = dt.replace(second=0, tzinfo=timezone.utc)
-        return int(dt.timestamp())
+        dt = dt.replace(second=0)
+        return localize_and_convert_to_utc(dt, input_tz)
     
     # Handle legacy MM/DD/YYYY HH:MM format
     elif re.match(r'^\d{1,2}/\d{1,2}/\d{4} \d{1,2}:\d{2}$', human_str):
         dt = datetime.strptime(human_str, '%m/%d/%Y %H:%M')
-        dt = dt.replace(tzinfo=timezone.utc)
-        return int(dt.timestamp())
+        return localize_and_convert_to_utc(dt, input_tz)
     
     else:
         raise ValueError("Invalid datetime format. Supported formats: YYYY-MM-DD-HHMMSS, YYYYMMDDHHMMSS, YYYYMMDDHHMM, MM/DD/YYYY HH:MM")
@@ -335,7 +347,7 @@ def index():
             if direction == "epoch_to_human":
                 result = epoch_to_human(input_value, target_tz=timezone if timezone else None)
             else:
-                result = human_to_epoch(input_value)
+                result = human_to_epoch(input_value, input_tz=timezone if timezone else None)
         except Exception as e:
             result = f"Error: {e}"
     return render_template("index.html", result=result, direction=direction, input_value=input_value, timezone=timezone)
