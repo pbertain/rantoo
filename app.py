@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, jsonify
 from flask_restx import Api, Resource, fields
 from datetime import datetime, timezone
 import re
+import pytz
 
 app = Flask(__name__)
 
@@ -19,10 +20,17 @@ api_v1 = api.namespace('v1', description='JSON API endpoints (v1)')
 # Add namespaces to API
 api.add_namespace(api_v1)
 
-def epoch_to_human(epoch):
+def epoch_to_human(epoch, target_tz=None):
     """Converts epoch seconds (UTC) to formatted datetime string."""
     dt = datetime.fromtimestamp(float(epoch), tz=timezone.utc)
-    return dt.strftime('%a %Y-%m-%d %H:%M:%S')
+    if target_tz:
+        try:
+            tz = pytz.timezone(target_tz)
+            dt = dt.astimezone(tz)
+            return dt.strftime('%a %Y-%m-%d %H:%M:%S %Z')
+        except Exception:
+            pass  # Fall back to UTC if timezone is invalid
+    return dt.strftime('%a %Y-%m-%d %H:%M:%S UTC')
 
 def human_to_epoch(human_str):
     """Converts various datetime formats to epoch seconds."""
@@ -318,17 +326,19 @@ def index():
     result = None
     direction = None
     input_value = ''
+    timezone = ''
     if request.method == "POST":
         direction = request.form.get("direction")
         input_value = request.form.get("input_value")
+        timezone = request.form.get("timezone", '')
         try:
             if direction == "epoch_to_human":
-                result = epoch_to_human(input_value)
+                result = epoch_to_human(input_value, target_tz=timezone if timezone else None)
             else:
                 result = human_to_epoch(input_value)
         except Exception as e:
             result = f"Error: {e}"
-    return render_template("index.html", result=result, direction=direction, input_value=input_value)
+    return render_template("index.html", result=result, direction=direction, input_value=input_value, timezone=timezone)
 
 if __name__ == "__main__":
     import os

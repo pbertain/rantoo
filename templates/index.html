@@ -12,9 +12,30 @@
         <div class="data-entry-section">
             <form method="post">
                 <div class="dropdown-container">
-                    <select name="direction" class="conversion-dropdown">
+                    <select name="direction" class="conversion-dropdown" id="direction">
                         <option value="epoch_to_human" {% if direction == "epoch_to_human" or not direction %}selected{% endif %}>Epoch → Date/Time</option>
                         <option value="human_to_epoch" {% if direction == "human_to_epoch" %}selected{% endif %}>Date/Time → Epoch</option>
+                    </select>
+                </div>
+                <div class="dropdown-container" id="timezone-container">
+                    <select name="timezone" class="conversion-dropdown">
+                        <option value="">UTC (Coordinated Universal Time)</option>
+                        <option value="America/New_York" {% if timezone == "America/New_York" %}selected{% endif %}>New York / -5 EST</option>
+                        <option value="America/Chicago" {% if timezone == "America/Chicago" %}selected{% endif %}>Chicago / -6 CST</option>
+                        <option value="America/Denver" {% if timezone == "America/Denver" %}selected{% endif %}>Denver / -7 MST</option>
+                        <option value="America/Los_Angeles" {% if timezone == "America/Los_Angeles" %}selected{% endif %}>Los Angeles / -7 PDT</option>
+                        <option value="America/Anchorage" {% if timezone == "America/Anchorage" %}selected{% endif %}>Anchorage / -9 AKST</option>
+                        <option value="Pacific/Honolulu" {% if timezone == "Pacific/Honolulu" %}selected{% endif %}>Honolulu / -10 HST</option>
+                        <option value="Europe/London" {% if timezone == "Europe/London" %}selected{% endif %}>London / +0 GMT</option>
+                        <option value="Europe/Paris" {% if timezone == "Europe/Paris" %}selected{% endif %}>Paris / +1 CET</option>
+                        <option value="Europe/Berlin" {% if timezone == "Europe/Berlin" %}selected{% endif %}>Berlin / +1 CET</option>
+                        <option value="Europe/Moscow" {% if timezone == "Europe/Moscow" %}selected{% endif %}>Moscow / +3 MSK</option>
+                        <option value="Asia/Dubai" {% if timezone == "Asia/Dubai" %}selected{% endif %}>Dubai / +4 GST</option>
+                        <option value="Asia/Kolkata" {% if timezone == "Asia/Kolkata" %}selected{% endif %}>Mumbai / +5:30 IST</option>
+                        <option value="Asia/Shanghai" {% if timezone == "Asia/Shanghai" %}selected{% endif %}>Shanghai / +8 CST</option>
+                        <option value="Asia/Tokyo" {% if timezone == "Asia/Tokyo" %}selected{% endif %}>Tokyo / +9 JST</option>
+                        <option value="Australia/Sydney" {% if timezone == "Australia/Sydney" %}selected{% endif %}>Sydney / +10 AEST</option>
+                        <option value="Pacific/Auckland" {% if timezone == "Pacific/Auckland" %}selected{% endif %}>Auckland / +12 NZST</option>
                     </select>
                 </div>
                 <input
@@ -43,9 +64,29 @@
             <!--
             <small>Space Age Theme by Flask<br>Powered by Python 🐍 and <a href="https://elements.puhfph.cloud" target="_blank" style="text-decoration: none;"> <img src="https://elements.puhfph.cloud/static/img/powered-by-puhfph-cloud-logo.png" alt="Powered by PUHFPH Cloud" class="footer-logo"></small>
 	    -->
-            <small>Space Age Theme by Flask<br><a href="https://elements.puhfph.cloud" target="_blank" style="text-decoration: none;"> <img src="https://elements.puhfph.cloud/static/img/powered-by-puhfph-cloud-logo.png" alt="Powered by PUHFPH Cloud" class="footer-logo"></small>
+            <small>Space Age Theme by Flask<br><a href="https://elements.puhfph.cloud" target="_blank" style="text-decoration: none;"> <img src="https://www.elementspuff.net/static/img/powered-by-puhfph-cloud-logo.png" alt="Powered by PUHFPH Cloud" class="footer-logo"></small>
         </footer>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const directionSelect = document.getElementById('direction');
+            const timezoneContainer = document.getElementById('timezone-container');
+            
+            function updateTimezoneVisibility() {
+                if (directionSelect.value === 'epoch_to_human') {
+                    timezoneContainer.style.display = 'block';
+                } else {
+                    timezoneContainer.style.display = 'none';
+                }
+            }
+            
+            // Set initial state
+            updateTimezoneVisibility();
+            
+            // Listen for changes
+            directionSelect.addEventListener('change', updateTimezoneVisibility);
+        });
+    </script>
 </body>
 </html>
 
