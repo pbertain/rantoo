@@ -20,16 +20,90 @@ api_v1 = api.namespace('v1', description='JSON API endpoints (v1)')
 # Add namespaces to API
 api.add_namespace(api_v1)
 
+def normalize_timezone(tz_input):
+    """
+    Converts timezone abbreviations and friendly names to pytz timezone names.
+    Supports abbreviations like 'pst', 'pdt', 'msk' and friendly names like 'pacific', 'moscow'.
+    """
+    if not tz_input:
+        return None
+    
+    tz_input = tz_input.lower().strip()
+    
+    # Timezone abbreviation and friendly name mapping
+    tz_map = {
+        # Pacific timezone
+        'pacific': 'America/Los_Angeles',
+        'pst': 'America/Los_Angeles',
+        'pdt': 'America/Los_Angeles',
+        # Eastern timezone
+        'eastern': 'America/New_York',
+        'est': 'America/New_York',
+        'edt': 'America/New_York',
+        # Central timezone
+        'central': 'America/Chicago',
+        'cst': 'America/Chicago',
+        'cdt': 'America/Chicago',
+        # Mountain timezone
+        'mountain': 'America/Denver',
+        'mst': 'America/Denver',
+        'mdt': 'America/Denver',
+        # Moscow timezone
+        'moscow': 'Europe/Moscow',
+        'msk': 'Europe/Moscow',
+        # London timezone
+        'london': 'Europe/London',
+        'gmt': 'Europe/London',
+        # Paris timezone
+        'paris': 'Europe/Paris',
+        'cet': 'Europe/Paris',
+        # Berlin timezone
+        'berlin': 'Europe/Berlin',
+        # Tokyo timezone
+        'tokyo': 'Asia/Tokyo',
+        'jst': 'Asia/Tokyo',
+        # Shanghai timezone
+        'shanghai': 'Asia/Shanghai',
+        # Dubai timezone
+        'dubai': 'Asia/Dubai',
+        'gst': 'Asia/Dubai',
+        # Mumbai timezone
+        'mumbai': 'Asia/Kolkata',
+        'ist': 'Asia/Kolkata',
+        # Sydney timezone
+        'sydney': 'Australia/Sydney',
+        'aest': 'Australia/Sydney',
+        # Auckland timezone
+        'auckland': 'Pacific/Auckland',
+        'nzst': 'Pacific/Auckland',
+    }
+    
+    # Check if it's a mapped abbreviation or friendly name
+    if tz_input in tz_map:
+        return tz_map[tz_input]
+    
+    # If not found in map, try to use it as-is (might be a valid pytz timezone name)
+    # This allows users to still use full names like 'America/Los_Angeles'
+    try:
+        pytz.timezone(tz_input)
+        return tz_input
+    except:
+        # If it's not a valid pytz name either, return None (will default to UTC)
+        return None
+
 def epoch_to_human(epoch, target_tz=None):
     """Converts epoch seconds (UTC) to formatted datetime string."""
     dt = datetime.fromtimestamp(float(epoch), tz=timezone.utc)
     if target_tz:
-        try:
-            tz = pytz.timezone(target_tz)
-            dt = dt.astimezone(tz)
-            return dt.strftime('%a %Y-%m-%d %H:%M:%S %Z')
-        except Exception:
-            pass  # Fall back to UTC if timezone is invalid
+        # Normalize timezone abbreviation/friendly name to pytz timezone name
+        normalized_tz = normalize_timezone(target_tz)
+        if normalized_tz:
+            try:
+                tz = pytz.timezone(normalized_tz)
+                dt = dt.astimezone(tz)
+                return dt.strftime('%a %Y-%m-%d %H:%M:%S %Z')
+            except Exception:
+                pass  # Fall back to UTC if timezone is invalid
     return dt.strftime('%a %Y-%m-%d %H:%M:%S UTC')
 
 def human_to_epoch(human_str, input_tz=None):
@@ -37,17 +111,20 @@ def human_to_epoch(human_str, input_tz=None):
     # Helper to localize datetime to timezone then convert to UTC
     def localize_and_convert_to_utc(dt, tz_name):
         if tz_name:
-            try:
-                tz = pytz.timezone(tz_name)
-                localized_dt = tz.localize(dt, is_dst=None)
-                return int(localized_dt.astimezone(timezone.utc).timestamp())
-            except Exception:
-                # Fall back to UTC if timezone is invalid
-                dt = dt.replace(tzinfo=timezone.utc)
-                return int(dt.timestamp())
-        else:
-            dt = dt.replace(tzinfo=timezone.utc)
-            return int(dt.timestamp())
+            # Normalize timezone abbreviation/friendly name to pytz timezone name
+            normalized_tz = normalize_timezone(tz_name)
+            if normalized_tz:
+                try:
+                    tz = pytz.timezone(normalized_tz)
+                    localized_dt = tz.localize(dt, is_dst=None)
+                    return int(localized_dt.astimezone(timezone.utc).timestamp())
+                except Exception:
+                    # Fall back to UTC if timezone is invalid
+                    dt = dt.replace(tzinfo=timezone.utc)
+                    return int(dt.timestamp())
+        # Fall back to UTC if no timezone specified or normalization failed
+        dt = dt.replace(tzinfo=timezone.utc)
+        return int(dt.timestamp())
     
     # Handle YYYY-MM-DD-HHMMSS format
     if re.match(r'^\d{4}-\d{2}-\d{2}-\d{6}$', human_str):
@@ -332,6 +409,65 @@ def swagger_ui():
 def health():
     """Health check endpoint for load balancers and monitoring."""
     return {"status": "healthy", "timestamp": datetime.now(timezone.utc).isoformat()}, 200
+
+@app.route("/epoch/<int:epoch_time>")
+def restful_epoch(epoch_time):
+    """RESTful endpoint to convert epoch to datetime and display result page."""
+    timezone_param = request.args.get('tz', '').strip()
+    timezone_display = timezone_param if timezone_param else 'UTC'
+    
+    try:
+        # Convert epoch to datetime
+        datetime_str = epoch_to_human(epoch_time, target_tz=timezone_param if timezone_param else None)
+        
+        return render_template("result.html",
+                             epoch=epoch_time,
+                             datetime=datetime_str,
+                             input_value=str(epoch_time),
+                             timezone=timezone_display if timezone_param else None,
+                             error=None)
+    except Exception as e:
+        return render_template("result.html",
+                             epoch=None,
+                             datetime=None,
+                             input_value=str(epoch_time),
+                             timezone=None,
+                             error=f"Error: {str(e)}"), 400
+
+@app.route("/datetime/<string:datetime_str>")
+def restful_datetime(datetime_str):
+    """RESTful endpoint to convert datetime to epoch and display result page."""
+    timezone_param = request.args.get('tz', '').strip()
+    timezone_display = timezone_param if timezone_param else 'UTC'
+    
+    try:
+        # Handle optional seconds - if 12 digits, append '00' for seconds
+        normalized_datetime = datetime_str
+        
+        # Check if it's a 12-digit YYYYMMDDHHMM format (without seconds)
+        if re.match(r'^\d{12}$', datetime_str):
+            # Add '00' seconds to make it 14 digits
+            normalized_datetime = datetime_str + '00'
+        
+        # Convert datetime to epoch
+        epoch_time = human_to_epoch(normalized_datetime, input_tz=timezone_param if timezone_param else None)
+        
+        # Get formatted datetime for display
+        formatted_datetime = epoch_to_human(epoch_time, target_tz=timezone_param if timezone_param else None)
+        
+        return render_template("result.html",
+                             epoch=epoch_time,
+                             datetime=formatted_datetime,
+                             input_value=datetime_str,
+                             timezone=timezone_display,
+                             error=None)
+    except Exception as e:
+        return render_template("result.html",
+                             epoch=None,
+                             datetime=None,
+                             input_value=datetime_str,
+                             timezone=None,
+                             error=f"Error: {str(e)}"), 400
 
 @app.route("/", methods=["GET", "POST"])
 def index():

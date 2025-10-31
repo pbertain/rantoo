@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Conversion Result - Rantoo Epoch Converter</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Epoch Date 📅 & Time ⏳ Converter</h1>
+        
+        <div class="result">
+            <h2>Result:</h2>
+            {% if error %}
+                <div style="color: #ff6b6b;">{{ error }}</div>
+            {% else %}
+                <div>
+                    <strong>Epoch:</strong> {{ epoch }}<br>
+                    <strong>Datetime:</strong> {{ datetime }}<br>
+                    <strong>Input:</strong> {{ input_value }}
+                    {% if timezone %}
+                        <br><strong>Timezone:</strong> {{ timezone }}
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div style="margin-top: 30px;">
+            <a href="/" style="color: #a78bfa; text-decoration: none; font-size: 1.1em; padding: 12px 24px; border: 2px solid #a78bfa; border-radius: 12px; background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(167, 139, 250, 0.1)); transition: all 0.4s ease; display: inline-block;">← Back to Converter</a>
+        </div>
+        
+        <div class="api-link">
+            <a href="/api/docs/" target="_blank">📚 API Documentation</a>
+        </div>
+        
+        <footer>
+            <small>Space Age Theme by Flask<br><a href="https://elements.puhfph.cloud" target="_blank" style="text-decoration: none;"> <img src="https://www.elementspuff.net/static/img/powered-by-puhfph-cloud-logo.png" alt="Powered by PUHFPH Cloud" class="footer-logo"></small>
+        </footer>
+    </div>
+</body>
+</html>
