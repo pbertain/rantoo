@@ -46,8 +46,7 @@ jobs:
     - name: Deploy application
       run: |
         cd ansible
-        echo "${{ secrets.ANSIBLE_VAULT_PASSWORD }}" | ansible-playbook \
-          --vault-password-file=/dev/stdin \
+        ansible-playbook \
           -i "../hosts" \
           -u ansible \
           --private-key ~/.ssh/keys/nirdclub__id_ed25519 \
