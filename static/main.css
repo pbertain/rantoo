@@ -26,15 +26,23 @@ h1 {
     text-shadow: 0 0 10px #6d28d9, 0 0 20px #7c3aed, 0 0 30px #8b5cf6;
 }
 
-h2.subtitle {
-    margin-top: 0;
+.subtitle-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     margin-bottom: 30px;
+    gap: 20px;
+}
+
+h2.subtitle {
+    margin: 0;
     color: #a78bfa;
     letter-spacing: 0.5px;
     font-size: 1.1em;
     font-weight: normal;
     text-shadow: 0 0 5px rgba(167, 139, 250, 0.5);
     opacity: 0.9;
+    flex: 1;
 }
 
 /* Data Entry Section Box */
@@ -176,6 +184,11 @@ button:hover::before {
     animation: resultGlow 2s ease-in-out infinite alternate;
 }
 
+.result > div,
+.result > h2 {
+    text-align: left;
+}
+
 @keyframes resultGlow {
     from {
         box-shadow: 0 6px 20px rgba(0, 234, 255, 0.4), 0 0 15px rgba(139, 92, 246, 0.3);
@@ -235,20 +248,21 @@ footer {
 /* Navigation Section */
 .nav-section {
     display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin: 30px 0;
+    justify-content: flex-end;
+    gap: 8px;
+    margin: 0;
     flex-wrap: wrap;
+    align-items: center;
 }
 
 .nav-button {
     color: #a78bfa;
     text-decoration: none;
-    font-size: 0.9em;
+    font-size: 0.75em;
     font-weight: 600;
-    padding: 10px 20px;
+    padding: 6px 12px;
     border: 2px solid #a78bfa;
-    border-radius: 12px;
+    border-radius: 8px;
     background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(167, 139, 250, 0.1));
     transition: all 0.4s ease;
     display: inline-block;

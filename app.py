@@ -211,9 +211,9 @@ class EpochToDateTime(Resource):
         try:
             human_time = epoch_to_human(epoch_time)
             return {
+                'input': str(epoch_time),
                 'epoch': epoch_time,
-                'datetime': human_time,
-                'input': str(epoch_time)
+                'datetime': human_time
             }
         except Exception as e:
             api.abort(400, message=str(e))
@@ -227,9 +227,9 @@ class DateTimeToEpoch(Resource):
         try:
             epoch_time = human_to_epoch(datetime_str)
             return {
+                'input': datetime_str,
                 'epoch': epoch_time,
-                'datetime': datetime_str,  # Return original input format
-                'input': datetime_str
+                'datetime': datetime_str  # Return original input format
             }
         except Exception as e:
             api.abort(400, message=str(e))
@@ -240,7 +240,7 @@ def curl_epoch_to_datetime(epoch_time):
     """Convert epoch time to human readable datetime (plain text)"""
     try:
         human_time = epoch_to_human(epoch_time)
-        return f"Epoch:     {epoch_time}\nDatetime:  {human_time}\nInput:     {epoch_time}\n\n"
+        return f"Input:     {epoch_time}\nEpoch:     {epoch_time}\nDatetime:  {human_time}\n\n"
     except Exception as e:
         return f"Error: {str(e)}\n\n", 400
 
@@ -249,7 +249,7 @@ def curl_datetime_to_epoch(datetime_str):
     """Convert human readable datetime to epoch time (plain text)"""
     try:
         epoch_time = human_to_epoch(datetime_str)
-        return f"Epoch:     {epoch_time}\nDatetime:  {datetime_str}\nInput:     {datetime_str}\n\n"
+        return f"Input:     {datetime_str}\nEpoch:     {epoch_time}\nDatetime:  {datetime_str}\n\n"
     except Exception as e:
         return f"Error: {str(e)}\n\n", 400
 
@@ -290,9 +290,9 @@ def swagger_json():
                                     "schema": {
                                         "type": "object",
                                         "properties": {
+                                            "input": {"type": "string", "example": "1757509860"},
                                             "epoch": {"type": "integer", "example": 1757509860},
-                                            "datetime": {"type": "string", "example": "Wed 2025-09-10 13:11:00"},
-                                            "input": {"type": "string", "example": "1757509860"}
+                                            "datetime": {"type": "string", "example": "Wed 2025-09-10 13:11:00"}
                                         }
                                     }
                                 }
@@ -322,9 +322,9 @@ def swagger_json():
                                     "schema": {
                                         "type": "object",
                                         "properties": {
+                                            "input": {"type": "string", "example": "2025-09-10-131100"},
                                             "epoch": {"type": "integer", "example": 1757509860},
-                                            "datetime": {"type": "string", "example": "Wed 2025-09-10 13:11:00"},
-                                            "input": {"type": "string", "example": "2025-09-10-131100"}
+                                            "datetime": {"type": "string", "example": "Wed 2025-09-10 13:11:00"}
                                         }
                                     }
                                 }
@@ -447,9 +447,9 @@ def swagger_ui():
                                         "schema": {{
                                             "type": "object",
                                             "properties": {{
+                                                "input": {{"type": "string", "example": "1757509860"}},
                                                 "epoch": {{"type": "integer", "example": 1757509860}},
-                                                "datetime": {{"type": "string", "example": "Wed 2025-09-10 13:11:00"}},
-                                                "input": {{"type": "string", "example": "1757509860"}}
+                                                "datetime": {{"type": "string", "example": "Wed 2025-09-10 13:11:00"}}
                                             }}
                                         }}
                                     }}
@@ -476,9 +476,9 @@ def swagger_ui():
                                         "schema": {{
                                             "type": "object",
                                             "properties": {{
+                                                "input": {{"type": "string", "example": "2025-09-10-131100"}},
                                                 "epoch": {{"type": "integer", "example": 1757509860}},
-                                                "datetime": {{"type": "string", "example": "Wed 2025-09-10 13:11:00"}},
-                                                "input": {{"type": "string", "example": "2025-09-10-131100"}}
+                                                "datetime": {{"type": "string", "example": "Wed 2025-09-10 13:11:00"}}
                                             }}
                                         }}
                                     }}
@@ -504,7 +504,7 @@ def swagger_ui():
                                         "description": "Success",
                                         "schema": {{
                                             "type": "string",
-                                            "example": "Epoch:     1757509860\\nDatetime:  Wed 2025-09-10 13:11:00\\nInput:     1757509860\\n\\n"
+                                            "example": "Input:     1757509860\\nEpoch:     1757509860\\nDatetime:  Wed 2025-09-10 13:11:00\\n\\n"
                                         }}
                                     }}
                                 }}
@@ -529,7 +529,7 @@ def swagger_ui():
                                         "description": "Success",
                                         "schema": {{
                                             "type": "string",
-                                            "example": "Epoch:     1757509860\\nDatetime:  2025-09-10-131100\\nInput:     2025-09-10-131100\\n\\n"
+                                            "example": "Input:     2025-09-10-131100\\nEpoch:     1757509860\\nDatetime:  2025-09-10-131100\\n\\n"
                                         }}
                                     }}
                                 }}
