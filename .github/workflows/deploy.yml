@@ -1,0 +1,56 @@
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: ["Tests"]
+    branches: [main]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install Ansible
+      run: |
+        python -m pip install --upgrade pip
+        pip install ansible
+    
+    - name: Setup SSH key
+      run: |
+        mkdir -p ~/.ssh/keys
+        echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/keys/nirdclub__id_ed25519
+        chmod 600 ~/.ssh/keys/nirdclub__id_ed25519
+    
+    - name: Configure known hosts
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keyscan -H host74.nird.club >> ~/.ssh/known_hosts 2>/dev/null || true
+        ssh-keyscan -H host78.nird.club >> ~/.ssh/known_hosts 2>/dev/null || true
+        ssh-keyscan -H host79.nird.club >> ~/.ssh/known_hosts 2>/dev/null || true
+    
+    - name: Test connection
+      run: |
+        cd ansible
+        ansible -i "../hosts" -u ansible --private-key ~/.ssh/keys/nirdclub__id_ed25519 pb_home -m ping
+    
+    - name: Deploy application
+      run: |
+        cd ansible
+        echo "${{ secrets.ANSIBLE_VAULT_PASSWORD }}" | ansible-playbook \
+          --vault-password-file=/dev/stdin \
+          -i "../hosts" \
+          -u ansible \
+          --private-key ~/.ssh/keys/nirdclub__id_ed25519 \
+          playbooks/deploy.yml
+      continue-on-error: false
+
