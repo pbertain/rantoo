@@ -219,7 +219,7 @@ class TestSwaggerDocumentation:
         data = json.loads(response.data)
         assert 'swagger' in data
         assert 'info' in data
-        assert data['info']['title'] == 'Rantoo Epoch Converter API'
+        assert data['info']['title'] == 'TimePuff Epoch Converter API'
     
     def test_api_docs_endpoint(self, client):
         """Test /api/docs/ endpoint"""

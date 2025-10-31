@@ -20,8 +20,8 @@ Random Tools - A Flask web application for various utility tools.
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/pbertain/rantoo.git
-   cd rantoo
+   git clone https://github.com/pbertain/timepuff.git
+   cd timepuff
    ```
 
 2. Create and activate virtual environment:

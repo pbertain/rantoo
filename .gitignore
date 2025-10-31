@@ -211,3 +211,6 @@ __marimo__/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Application data
+conversion_stats.txt

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Conversion Result - TimePuff</title>
+    <title>Stats - TimePuff</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
 </head>
 <body>
@@ -18,23 +18,14 @@
         </div>
         
         <div class="result">
-            <h2>Result:</h2>
-            {% if error %}
-                <div style="color: #ff6b6b;">{{ error }}</div>
-            {% else %}
-                <div>
-                    <strong>Epoch:</strong> {{ epoch }}<br>
-                    <strong>Datetime:</strong> {{ datetime }}<br>
-                    <strong>Input:</strong> {{ input_value }}
-                    {% if timezone %}
-                        <br><strong>Timezone:</strong> {{ timezone }}
-                    {% endif %}
-                </div>
-            {% endif %}
-        </div>
-        
-        <div style="margin-top: 30px;">
-            <a href="/" class="nav-button">← Back to Converter</a>
+            <h2>Conversion Statistics</h2>
+            <div style="font-size: 1.5em; margin-top: 20px;">
+                <strong>Total Conversions:</strong> 
+                <span style="color: #00eaff; font-size: 1.2em; text-shadow: 0 0 10px #6d28d9;">{{ "{:,}".format(conversion_count) }}</span>
+            </div>
+            <div style="margin-top: 20px; font-size: 0.9em; opacity: 0.8;">
+                This counter tracks all successful epoch ↔ datetime conversions performed on TimePuff.
+            </div>
         </div>
         
         <footer>

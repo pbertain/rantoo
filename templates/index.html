@@ -2,12 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Epoch Date 📅 & Time ⏳ Converter</title>
+    <title>TimePuff - The Epic Epoch Date & Time Converter</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
 </head>
 <body>
     <div class="container">
-        <h1>Epoch Date 📅 & Time ⏳ Converter</h1>
+        <h1>TimePuff</h1>
+        <h2 class="subtitle">The Epic Epoch Date 📅 & Time ⏳ Converter</h2>
+        
+        <div class="nav-section">
+            <a href="/api/docs/" class="nav-button">🚀 Try it out</a>
+            <a href="/api/redoc/" class="nav-button">📖 API Docs</a>
+            <a href="/stats/" class="nav-button">📊 Stats</a>
+            <a href="https://github.com/pbertain/timepuff" target="_blank" class="nav-button">🐙 GitHub</a>
+        </div>
         
         <div class="data-entry-section">
             <form method="post">
@@ -55,10 +63,6 @@
                 <div>{{ result }}</div>
             </div>
         {% endif %}
-        
-        <div class="api-link">
-            <a href="/api/docs/" target="_blank">📚 API Documentation</a>
-        </div>
         
         <footer>
             <!--
